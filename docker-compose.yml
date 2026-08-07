@@ -1,0 +1,45 @@
+services:
+  db:
+    image: mysql:9.7
+    container_name: estoque_db
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      # STRICT_ALL_TABLES (no lugar do STRICT_TRANS_TABLES padrao) faz o banco
+      # recusar com erro um estoque negativo em vez de truncar o valor.
+      - --sql-mode=ONLY_FULL_GROUP_BY,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-estoque}
+      MYSQL_USER: ${DB_USER:-estoque}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-estoque}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # Executado apenas na primeira subida (volume vazio), em ordem alfabetica.
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # CMD-SHELL para que a variavel de ambiente seja expandida dentro do container
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  adminer:
+    image: adminer:latest
+    container_name: estoque_adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: dracula
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
