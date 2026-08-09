@@ -8,8 +8,8 @@ saída de estoque. Frontend, backend e camada de dados no mesmo repositório.
 O projeto é construído por camada. Estado atual:
 
 - [x] **Camada de dados** — schema, relacionamentos, views e seed
-- [ ] Camada de backend — conexão, repositórios e regras de negócio
-- [ ] Camada de aplicação/frontend — telas de cadastro, listagem, movimentos e relatório
+- [x] **Camada de backend** — conexão, roteamento e repositórios (base)
+- [ ] Regras de negócio (entradas/saídas, transações) e camada de aplicação/frontend
 
 ## Estrutura
 
@@ -20,7 +20,14 @@ database/
     02_views.sql    views de listagem e relatório
     03_seed.sql     dados de exemplo
   README.md         modelo de dados e onde cada regra de negócio é garantida
+backend/
+  public/index.php  front controller (roteamento + endpoints da API)
+  src/
+    Config/Database.php    conexão PDO (singleton)
+    Repositories/           uma classe por tabela/agregado
+    Router.php              roteador minimalista (sem framework)
 docker-compose.yml  MySQL + Adminer
+composer.json       dependências PHP (vlucas/phpdotenv)
 .env.example        variáveis de ambiente
 ```
 
@@ -59,6 +66,25 @@ alterar um `.sql`:
 ```bash
 docker compose down -v && docker compose up -d
 ```
+
+## Como subir o backend
+
+Requer PHP >= 8.4 e [Composer](https://getcomposer.org/), com as extensões
+`pdo_mysql` e `zip` habilitadas no `php.ini`.
+
+```bash
+composer install
+php -S 127.0.0.1:8000 -t backend/public
+```
+
+| Rota | Descrição |
+| --- | --- |
+| `GET /api/health` | Verifica se a API está no ar |
+| `GET /api/itens` | Lista os itens (via `vw_itens_detalhados`) |
+
+O backend lê a conexão do `.env` na raiz do projeto (`DB_HOST=127.0.0.1`
+quando o PHP roda fora do Docker). O banco (MySQL + Adminer) precisa estar
+no ar — veja "Como subir o banco" acima.
 
 ## Modelo de dados
 
