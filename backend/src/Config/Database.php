@@ -21,7 +21,7 @@ final class Database
             $dsn = "mysql:host={$host};port={$port};dbname={$name};charset={$charset}";
 
             self::$connection = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,w
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]);
