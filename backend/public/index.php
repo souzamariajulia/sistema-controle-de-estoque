@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Models\Entrada;
 use App\Models\Item;
+use App\Repositories\EntradaRepository;
 use App\Repositories\ItemRepository;
 use App\Repositories\SubcategoriaRepository;
 use App\Router;
@@ -60,6 +62,36 @@ $router->post('/api/itens', function (): void {
 
     $repositorio = new ItemRepository();
     $id = $repositorio->create(Item::fromArray($dados));
+
+    http_response_code(201);
+    echo json_encode($repositorio->findById($id));
+});
+
+$router->get('/api/itens/{id}/entradas', function (array $params): void {
+    $entradas = (new EntradaRepository())->findByItem((int) $params['id']);
+    echo json_encode($entradas);
+});
+
+$router->post('/api/entradas', function (): void {
+    $dados = json_decode(file_get_contents('php://input'), true) ?? [];
+
+    $erros = Entrada::validar($dados);
+
+    if ($erros !== []) {
+        http_response_code(400);
+        echo json_encode(['erros' => $erros]);
+        return;
+    }
+
+    $repositorio = new EntradaRepository();
+
+    try {
+        $id = $repositorio->create(Entrada::fromArray($dados));
+    } catch (InvalidArgumentException $e) {
+        http_response_code(400);
+        echo json_encode(['erros' => [$e->getMessage()]]);
+        return;
+    }
 
     http_response_code(201);
     echo json_encode($repositorio->findById($id));

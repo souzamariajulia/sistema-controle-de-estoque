@@ -22,7 +22,7 @@ INNER JOIN categorias    c  ON c.id  = sc.categoria_id;
 
 CREATE VIEW vw_movimentacoes AS
 SELECT
-    'ENTRADA'                AS tipo,
+    'ENTRADA' COLLATE utf8mb4_unicode_ci AS tipo,
     ie.id                    AS movimento_item_id,
     e.id                     AS movimento_id,
     ie.item_id,
@@ -37,7 +37,7 @@ INNER JOIN entradas e ON e.id = ie.entrada_id
 UNION ALL
 
 SELECT
-    'SAIDA'                  AS tipo,
+    'SAIDA' COLLATE utf8mb4_unicode_ci AS tipo,
     isa.id                   AS movimento_item_id,
     s.id                     AS movimento_id,
     isa.item_id,
