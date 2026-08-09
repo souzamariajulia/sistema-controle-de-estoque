@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 use App\Models\Entrada;
 use App\Models\Item;
+use App\Models\Saida;
 use App\Repositories\EntradaRepository;
 use App\Repositories\ItemRepository;
+use App\Repositories\SaidaRepository;
 use App\Repositories\SubcategoriaRepository;
 use App\Router;
 
@@ -87,6 +89,39 @@ $router->post('/api/entradas', function (): void {
 
     try {
         $id = $repositorio->create(Entrada::fromArray($dados));
+    } catch (InvalidArgumentException $e) {
+        http_response_code(400);
+        echo json_encode(['erros' => [$e->getMessage()]]);
+        return;
+    }
+
+    http_response_code(201);
+    echo json_encode($repositorio->findById($id));
+});
+
+$router->get('/api/itens/{id}/saidas', function (array $params): void {
+    $saidas = (new SaidaRepository())->findByItem((int) $params['id']);
+    echo json_encode($saidas);
+});
+
+$router->post('/api/saidas', function (): void {
+    $dados = json_decode(file_get_contents('php://input'), true) ?? [];
+
+    $erros = Saida::validar($dados);
+    $repositorio = new SaidaRepository();
+
+    if ($erros === [] && $repositorio->numeroControleExiste(trim((string) $dados['numero_controle']))) {
+        $erros[] = 'numero_controle informado já está em uso';
+    }
+
+    if ($erros !== []) {
+        http_response_code(400);
+        echo json_encode(['erros' => $erros]);
+        return;
+    }
+
+    try {
+        $id = $repositorio->create(Saida::fromArray($dados));
     } catch (InvalidArgumentException $e) {
         http_response_code(400);
         echo json_encode(['erros' => [$e->getMessage()]]);
