@@ -103,4 +103,13 @@ final class EntradaRepository
 
         return $stmt->fetchAll();
     }
+
+    public function findAll(): array
+    {
+        $stmt = Database::connection()->query(
+            "SELECT * FROM vw_movimentacoes WHERE tipo = 'ENTRADA' ORDER BY data DESC, created_at DESC"
+        );
+
+        return $stmt->fetchAll();
+    }
 }

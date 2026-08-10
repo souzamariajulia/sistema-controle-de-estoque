@@ -132,6 +132,10 @@ $router->get('/api/itens/{id}/entradas', function (array $params): void {
     echo json_encode((new EntradaRepository())->findByItem($id));
 });
 
+$router->get('/api/entradas', function (): void {
+    echo json_encode((new EntradaRepository())->findAll());
+});
+
 $router->post('/api/entradas', function (): void {
     $dados = json_decode(file_get_contents('php://input'), true) ?? [];
 
@@ -161,6 +165,10 @@ $router->get('/api/itens/{id}/saidas', function (array $params): void {
     }
 
     echo json_encode((new SaidaRepository())->findByItem($id));
+});
+
+$router->get('/api/saidas', function (): void {
+    echo json_encode((new SaidaRepository())->findAll());
 });
 
 $router->post('/api/saidas', function (): void {

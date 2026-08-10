@@ -1,3 +1,4 @@
 iniciarListagemMovimentacao({
-    endpointConsultaPorItem: (itemId) => `/itens/${itemId}/saidas`,
+  endpointListarTodos: "/saidas",
+  endpointConsultaPorItem: (itemId) => `/itens/${itemId}/saidas`,
 });

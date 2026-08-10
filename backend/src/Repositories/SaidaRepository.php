@@ -114,4 +114,13 @@ final class SaidaRepository
 
         return $stmt->fetchAll();
     }
+
+    public function findAll(): array
+    {
+        $stmt = Database::connection()->query(
+            "SELECT * FROM vw_movimentacoes WHERE tipo = 'SAIDA' ORDER BY data DESC, created_at DESC"
+        );
+
+        return $stmt->fetchAll();
+    }
 }
