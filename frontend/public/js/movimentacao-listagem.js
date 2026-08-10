@@ -10,6 +10,11 @@ function iniciarListagemMovimentacao({
     corpoConsulta.innerHTML = `<tr><td colspan="4" class="estado-vazio">${mensagem}</td></tr>`;
   }
 
+  function formatarData(data) {
+    const [ano, mes, dia] = data.split("-");
+    return `${dia}/${mes}/${ano}`;
+  }
+
   function renderizarMovimentos(movimentos) {
     if (movimentos.length === 0) {
       renderizarEstadoVazio("Nenhum movimento encontrado.");
@@ -20,10 +25,10 @@ function iniciarListagemMovimentacao({
       .map(
         (mov) => `
             <tr>
-                <td>${mov.data}</td>
                 <td>${mov.documento}</td>
                 <td>${mov.origem_destino}</td>
                 <td>${mov.quantidade}</td>
+                <td>${formatarData(mov.data)}</td>
             </tr>
         `,
       )
