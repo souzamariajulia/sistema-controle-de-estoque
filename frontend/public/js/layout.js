@@ -1,8 +1,8 @@
 const PAGINAS_MENU = [
     { href: 'index.html', rotulo: 'Início', icone: 'assets/house.svg' },
-    { href: 'itens.html', rotulo: 'Itens', icone: 'assets/box.svg' },
-    { href: 'entradas.html', rotulo: 'Entradas', icone: 'assets/download.svg' },
-    { href: 'saidas.html', rotulo: 'Saídas', icone: 'assets/upload.svg' },
+    { href: 'itens.html', rotulo: 'Itens', icone: 'assets/box.svg', paginasRelacionadas: ['item-novo.html', 'item-detalhes.html'] },
+    { href: 'entradas.html', rotulo: 'Entradas', icone: 'assets/download.svg', paginasRelacionadas: ['entrada-nova.html'] },
+    { href: 'saidas.html', rotulo: 'Saídas', icone: 'assets/upload.svg', paginasRelacionadas: ['saida-nova.html'] },
     { href: 'relatorio.html', rotulo: 'Relatório', icone: 'assets/chart-column-increasing.svg' },
 ];
 
@@ -23,7 +23,9 @@ async function montarCabecalho() {
 
     const links = paginasComIcone
         .map((pagina) => {
-            const classeAtiva = pagina.href === paginaAtual ? ' class="ativo"' : '';
+            const ativo = pagina.href === paginaAtual
+                || (pagina.paginasRelacionadas ?? []).includes(paginaAtual);
+            const classeAtiva = ativo ? ' class="ativo"' : '';
             return `<a href="${pagina.href}"${classeAtiva}>${pagina.svg}<span>${pagina.rotulo}</span></a>`;
         })
         .join('');
