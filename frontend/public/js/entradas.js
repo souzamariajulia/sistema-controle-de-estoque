@@ -1,4 +1,3 @@
-iniciarTelaMovimentacao({
-  endpointRegistro: "/entradas",
-  endpointConsultaPorItem: (itemId) => `/itens/${itemId}/entradas`,
+iniciarListagemMovimentacao({
+    endpointConsultaPorItem: (itemId) => `/itens/${itemId}/entradas`,
 });

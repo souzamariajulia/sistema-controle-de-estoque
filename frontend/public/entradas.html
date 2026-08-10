@@ -4,60 +4,23 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Entradas de Estoque</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <header>
-      <nav>
-        <a href="itens.html">Itens</a>
-        <a href="entradas.html">Entradas</a>
-        <a href="saidas.html">Saídas</a>
-        <a href="relatorio.html">Relatório</a>
-      </nav>
-    </header>
+    <header></header>
 
     <main>
       <section>
-        <h2>Registrar entrada</h2>
-
-        <div id="mensagem" class="mensagem" hidden></div>
-
-        <form id="form-movimentacao">
-          <label>
-            Data
-            <input type="date" name="data" required />
-          </label>
-          <label>
-            Número da nota
-            <input type="text" name="numero_nota" maxlength="50" required />
-          </label>
-          <label>
-            Fornecedor
-            <input type="text" name="fornecedor" maxlength="150" required />
-          </label>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Quantidade</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="linhas-itens"></tbody>
-          </table>
-
-          <div class="acoes-form">
-            <button type="button" id="btn-add-linha" class="secundario">
-              + Adicionar item
-            </button>
-            <button type="submit">Registrar entrada</button>
-          </div>
-        </form>
-      </section>
-
-      <section>
-        <h2>Consultar entradas por item</h2>
+        <div class="cabecalho-secao">
+          <h2>Entradas</h2>
+          <a class="botao" href="entrada-nova.html">+ Registrar entrada</a>
+        </div>
 
         <div class="linha-consulta">
           <div>
@@ -83,8 +46,10 @@
       </section>
     </main>
 
+    <script src="js/layout.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/movimentacao.js"></script>
+    <script src="js/movimentacao-listagem.js"></script>
     <script src="js/entradas.js"></script>
   </body>
 </html>
