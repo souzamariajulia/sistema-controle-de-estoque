@@ -15,4 +15,16 @@ final class SubcategoriaRepository
 
         return $stmt->fetch() !== false;
     }
+
+    public function findAll(): array
+    {
+        $stmt = Database::connection()->query(
+            'SELECT sc.id, sc.nome, c.nome AS categoria
+             FROM subcategorias sc
+             INNER JOIN categorias c ON c.id = sc.categoria_id
+             ORDER BY c.nome, sc.nome'
+        );
+
+        return $stmt->fetchAll();
+    }
 }

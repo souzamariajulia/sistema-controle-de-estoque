@@ -17,6 +17,14 @@ $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__, 2));
 $dotenv->load();
 
 header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: ' . ($_ENV['FRONTEND_URL'] ?? 'http://127.0.0.1:8001'));
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
 $router = new Router();
 
@@ -33,6 +41,10 @@ $router->get('/api/itens', function (): void {
         : $repositorio->findAll();
 
     echo json_encode($itens);
+});
+
+$router->get('/api/subcategorias', function (): void {
+    echo json_encode((new SubcategoriaRepository())->findAll());
 });
 
 $router->get('/api/itens/{id}', function (array $params): void {
