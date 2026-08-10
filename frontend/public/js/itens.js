@@ -9,7 +9,7 @@ function renderizarItens(itens) {
       : itens
           .map(
             (item) => `
-            <tr>
+            <tr class="linha-clicavel" data-id="${item.item_id}">
                 <td class="celula-titulo">${item.descricao}</td>
                 <td>${item.cadastrado_por}</td>
                 <td><span class="badge badge-categoria">${item.categoria}</span></td>
@@ -41,6 +41,17 @@ inputBusca.addEventListener("keydown", (evento) => {
   if (evento.key === "Enter") {
     evento.preventDefault();
     carregarItens(inputBusca.value.trim());
+  }
+});
+
+corpoItens.addEventListener("click", (evento) => {
+  if (evento.target.closest("a")) {
+    return;
+  }
+
+  const linha = evento.target.closest(".linha-clicavel");
+  if (linha) {
+    window.location.href = `item-detalhes.html?id=${linha.dataset.id}`;
   }
 });
 
