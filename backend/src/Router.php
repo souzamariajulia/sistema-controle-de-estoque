@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Http\RespostaErro;
+
 final class Router
 {
-    /** @var array<int, array{method: string, pattern: string, handler: callable}> */
     private array $routes = [];
 
     public function get(string $path, callable $handler): void
@@ -19,7 +20,15 @@ final class Router
         $this->add('POST', $path, $handler);
     }
 
-    // PUT, DELETE
+    public function put(string $path, callable $handler): void
+    {
+        $this->add('PUT', $path, $handler);
+    }
+
+    public function delete(string $path, callable $handler): void
+    {
+        $this->add('DELETE', $path, $handler);
+    }
 
     private function add(string $method, string $path, callable $handler): void
     {
@@ -38,20 +47,19 @@ final class Router
             if ($route['method'] !== $method || preg_match($route['pattern'], $path, $matches) !== 1) {
                 continue;
             }
-            //TODO: entender essa parte melhor
+
             $params = array_filter($matches, fn ($chave) => is_string($chave), ARRAY_FILTER_USE_KEY);
 
             try {
                 ($route['handler'])($params);
             } catch (\Throwable $e) {
-                http_response_code(500);
-                echo json_encode(['erro' => $e->getMessage()]);
+                error_log($e->getMessage());
+                RespostaErro::enviar(500, 'Erro interno do servidor.');
             }
 
             return;
         }
 
-        http_response_code(404);
-        echo json_encode(['erro' => 'Rota não encontrada']);
+        RespostaErro::enviar(404, 'Rota não encontrada');
     }
 }

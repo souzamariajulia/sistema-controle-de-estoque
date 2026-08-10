@@ -6,7 +6,6 @@ namespace App\Repositories;
 
 use App\Config\Database;
 use App\Models\Item;
-use PDO;
 
 final class ItemRepository
 {
@@ -52,5 +51,42 @@ final class ItemRepository
         ]);
 
         return (int) Database::connection()->lastInsertId();
+    }
+
+    public function update(int $id, Item $item): void
+    {
+        $stmt = Database::connection()->prepare(
+            'UPDATE itens
+             SET subcategoria_id = :subcategoria_id, descricao = :descricao,
+                 cadastrado_por = :cadastrado_por, estoque = :estoque
+             WHERE id = :id'
+        );
+
+        $stmt->execute([
+            'subcategoria_id' => $item->subcategoriaId,
+            'descricao' => $item->descricao,
+            'cadastrado_por' => $item->cadastradoPor,
+            'estoque' => $item->estoque,
+            'id' => $id,
+        ]);
+    }
+
+    public function possuiMovimentacoes(int $id): bool
+    {
+        $stmt = Database::connection()->prepare(
+            'SELECT 1 FROM itens_entrada WHERE item_id = :id_entrada
+             UNION
+             SELECT 1 FROM itens_saida WHERE item_id = :id_saida
+             LIMIT 1'
+        );
+        $stmt->execute(['id_entrada' => $id, 'id_saida' => $id]);
+
+        return $stmt->fetch() !== false;
+    }
+
+    public function delete(int $id): void
+    {
+        $stmt = Database::connection()->prepare('DELETE FROM itens WHERE id = :id');
+        $stmt->execute(['id' => $id]);
     }
 }
