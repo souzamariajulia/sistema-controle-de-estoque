@@ -5,19 +5,6 @@ const botaoGerar = document.getElementById('btn-gerar');
 const botaoExportar = document.getElementById('btn-exportar');
 const botaoImprimir = document.getElementById('btn-imprimir');
 const corpoTabela = document.getElementById('linhas-relatorio');
-const caixaMensagem = document.getElementById('mensagem');
-
-function limparMensagem() {
-    caixaMensagem.hidden = true;
-    caixaMensagem.className = 'mensagem';
-    caixaMensagem.innerHTML = '';
-}
-
-function mostrarErro(mensagemTexto) {
-    caixaMensagem.className = 'mensagem erro';
-    caixaMensagem.textContent = mensagemTexto;
-    caixaMensagem.hidden = false;
-}
 
 function construirQueryString() {
     const parametros = new URLSearchParams();
@@ -37,12 +24,12 @@ function construirQueryString() {
 
 function renderizarRelatorio(linhas) {
     corpoTabela.innerHTML = linhas.length === 0
-        ? '<tr><td colspan="8">Nenhum item encontrado para os filtros selecionados.</td></tr>'
+        ? '<tr><td colspan="8" class="estado-vazio">Nenhum item encontrado para os filtros selecionados.</td></tr>'
         : linhas.map((linha) => `
             <tr>
-                <td>${linha.descricao}</td>
-                <td>${linha.categoria}</td>
-                <td>${linha.subcategoria}</td>
+                <td class="celula-titulo">${linha.descricao}</td>
+                <td><span class="badge badge-categoria">${linha.categoria}</span></td>
+                <td><span class="badge badge-neutro">${linha.subcategoria}</span></td>
                 <td>${linha.cadastrado_por}</td>
                 <td>${linha.estoque}</td>
                 <td>${linha.total_entradas}</td>
@@ -64,12 +51,10 @@ async function carregarItensParaFiltro() {
 }
 
 async function gerarRelatorio() {
-    limparMensagem();
-
     try {
         renderizarRelatorio(await apiFetch(`/relatorios/estoque?${construirQueryString()}`));
     } catch (erro) {
-        mostrarErro(erro instanceof ErroApi ? erro.erros.join('; ') : 'Falha ao gerar o relatório.');
+        mostrarToast(erro instanceof ErroApi ? erro.erros : ['Falha ao gerar o relatório.'], 'erro');
     }
 }
 
