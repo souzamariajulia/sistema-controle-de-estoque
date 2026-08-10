@@ -22,7 +22,7 @@ $dotenv->load();
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: ' . ($_ENV['FRONTEND_URL'] ?? 'http://127.0.0.1:8001'));
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -79,47 +79,6 @@ $router->post('/api/itens', function (): void {
 
     http_response_code(201);
     echo json_encode($repositorio->findById($id));
-});
-
-$router->put('/api/itens/{id}', function (array $params): void {
-    $id = (int) $params['id'];
-    $dados = json_decode(file_get_contents('php://input'), true) ?? [];
-
-    $repositorio = new ItemRepository();
-
-    if ($repositorio->findById($id) === null) {
-        RespostaErro::enviar(404, 'Item não encontrado');
-    }
-
-    $erros = Item::validar($dados);
-
-    if ($erros === [] && !(new SubcategoriaRepository())->existe((int) $dados['subcategoria_id'])) {
-        $erros[] = 'subcategoria_id informado não existe';
-    }
-
-    if ($erros !== []) {
-        RespostaErro::enviar(400, $erros);
-    }
-
-    $repositorio->update($id, Item::fromArray($dados));
-
-    echo json_encode($repositorio->findById($id));
-});
-
-$router->delete('/api/itens/{id}', function (array $params): void {
-    $id = (int) $params['id'];
-    $repositorio = new ItemRepository();
-
-    if ($repositorio->findById($id) === null) {
-        RespostaErro::enviar(404, 'Item não encontrado');
-    }
-
-    if ($repositorio->possuiMovimentacoes($id)) {
-        RespostaErro::enviar(400, 'Item possui entradas ou saídas registradas e não pode ser excluído.');
-    }
-
-    $repositorio->delete($id);
-    http_response_code(204);
 });
 
 $router->get('/api/itens/{id}/entradas', function (array $params): void {

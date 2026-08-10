@@ -16,12 +16,9 @@ function renderizarItens(itens) {
                 <td><span class="badge badge-neutro">${item.subcategoria}</span></td>
                 <td>${item.estoque}</td>
                 <td class="celula-acoes">
-                    <button type="button" class="btn-acoes" aria-label="Ações">&#8942;</button>
-                    <div class="menu-acoes" hidden>
-                        <a href="item-novo.html?id=${item.item_id}">Editar</a>
-                        <a href="item-detalhes.html?id=${item.item_id}">Ver detalhes</a>
-                        <button type="button" class="menu-item-excluir" data-id="${item.item_id}" data-descricao="${item.descricao}">Excluir</button>
-                    </div>
+                    <a class="link-detalhes" href="item-detalhes.html?id=${item.item_id}" title="Visualizar detalhes" aria-label="Visualizar detalhes">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                    </a>
                 </td>
             </tr>
         `,
@@ -44,56 +41,6 @@ inputBusca.addEventListener("keydown", (evento) => {
   if (evento.key === "Enter") {
     evento.preventDefault();
     carregarItens(inputBusca.value.trim());
-  }
-});
-
-function fecharTodosOsMenus() {
-  document.querySelectorAll(".menu-acoes").forEach((menu) => {
-    menu.hidden = true;
-  });
-}
-
-async function excluirItem(id, descricao) {
-  const confirmou = window.confirm(
-    `Excluir o item "${descricao}"? Essa ação não pode ser desfeita.`,
-  );
-
-  if (!confirmou) {
-    return;
-  }
-
-  try {
-    await apiFetch(`/itens/${id}`, { method: "DELETE" });
-    mostrarToast("Item excluído com sucesso.", "sucesso");
-    await carregarItens(inputBusca.value.trim());
-  } catch (erro) {
-    mostrarToast(
-      erro instanceof ErroApi ? erro.erros : ["Falha ao excluir o item."],
-      "erro",
-    );
-  }
-}
-
-corpoItens.addEventListener("click", (evento) => {
-  const botaoAcoes = evento.target.closest(".btn-acoes");
-  if (botaoAcoes) {
-    const menu = botaoAcoes.nextElementSibling;
-    const jaAberto = !menu.hidden;
-    fecharTodosOsMenus();
-    menu.hidden = jaAberto;
-    return;
-  }
-
-  const botaoExcluir = evento.target.closest(".menu-item-excluir");
-  if (botaoExcluir) {
-    fecharTodosOsMenus();
-    excluirItem(botaoExcluir.dataset.id, botaoExcluir.dataset.descricao);
-  }
-});
-
-document.addEventListener("click", (evento) => {
-  if (!evento.target.closest(".celula-acoes")) {
-    fecharTodosOsMenus();
   }
 });
 
