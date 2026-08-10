@@ -7,9 +7,12 @@ use App\Models\Item;
 use App\Models\Saida;
 use App\Repositories\EntradaRepository;
 use App\Repositories\ItemRepository;
+use App\Repositories\RelatorioRepository;
 use App\Repositories\SaidaRepository;
 use App\Repositories\SubcategoriaRepository;
 use App\Router;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
@@ -142,6 +145,52 @@ $router->post('/api/saidas', function (): void {
 
     http_response_code(201);
     echo json_encode($repositorio->findById($id));
+});
+
+$router->get('/api/relatorios/estoque', function (): void {
+    $itemId = isset($_GET['item_id']) ? (int) $_GET['item_id'] : null;
+    $dataInicio = $_GET['data_inicio'] ?? null;
+    $dataFim = $_GET['data_fim'] ?? null;
+
+    $linhas = (new RelatorioRepository())->gerarEstoque($itemId, $dataInicio, $dataFim);
+
+    if (($_GET['formato'] ?? null) === 'xlsx') {
+        $planilha = new Spreadsheet();
+        $aba = $planilha->getActiveSheet();
+
+        $aba->fromArray(
+            ['Item', 'Categoria', 'Subcategoria', 'Cadastrado por', 'Estoque atual', 'Total entradas', 'Total saidas', 'Saldo movimentado'],
+            null,
+            'A1'
+        );
+
+        $numeroLinha = 2;
+        foreach ($linhas as $item) {
+            $aba->fromArray([
+                $item['descricao'],
+                $item['categoria'],
+                $item['subcategoria'],
+                $item['cadastrado_por'],
+                $item['estoque'],
+                $item['total_entradas'],
+                $item['total_saidas'],
+                $item['saldo_movimentado'],
+            ], null, "A{$numeroLinha}");
+            $numeroLinha++;
+        }
+
+        foreach (range('A', 'H') as $coluna) {
+            $aba->getColumnDimension($coluna)->setAutoSize(true);
+        }
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="relatorio-estoque.xlsx"');
+
+        (new Xlsx($planilha))->save('php://output');
+        return;
+    }
+
+    echo json_encode($linhas);
 });
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
