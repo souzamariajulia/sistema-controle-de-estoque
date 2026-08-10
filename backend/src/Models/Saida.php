@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Validation\Validador;
+
 final class Saida
 {
     public function __construct(
-        public readonly ?int $id,
         public readonly string $data,
         public readonly string $numeroControle,
         public readonly string $localDestino,
@@ -18,12 +19,11 @@ final class Saida
     public static function fromArray(array $dados): self
     {
         $itens = array_map(
-            static fn (array $item) => ItemSaida::fromArray($item),
+            fn (array $item) => ItemSaida::fromArray($item),
             $dados['itens'] ?? []
         );
 
         return new self(
-            id: isset($dados['id']) ? (int) $dados['id'] : null,
             data: (string) $dados['data'],
             numeroControle: trim((string) $dados['numero_controle']),
             localDestino: trim((string) $dados['local_destino']),
@@ -39,7 +39,6 @@ final class Saida
             $quantidadeAtual = $consolidado[$item->itemId]->quantidade ?? 0;
 
             $consolidado[$item->itemId] = new ItemSaida(
-                id: null,
                 itemId: $item->itemId,
                 quantidade: $quantidadeAtual + $item->quantidade,
             );
@@ -52,24 +51,9 @@ final class Saida
     {
         $erros = [];
 
-        $data = (string) ($dados['data'] ?? '');
-        if ($data === '' || !self::dataValida($data)) {
-            $erros[] = 'data é obrigatória e deve estar no formato AAAA-MM-DD';
-        }
-
-        $numeroControle = trim((string) ($dados['numero_controle'] ?? ''));
-        if ($numeroControle === '') {
-            $erros[] = 'numero_controle é obrigatório';
-        } elseif (mb_strlen($numeroControle) > 50) {
-            $erros[] = 'numero_controle deve ter no máximo 50 caracteres';
-        }
-
-        $localDestino = trim((string) ($dados['local_destino'] ?? ''));
-        if ($localDestino === '') {
-            $erros[] = 'local_destino é obrigatório';
-        } elseif (mb_strlen($localDestino) > 150) {
-            $erros[] = 'local_destino deve ter no máximo 150 caracteres';
-        }
+        Validador::data($dados, 'data', $erros);
+        Validador::campoObrigatorio($dados, 'numero_controle', 50, $erros);
+        Validador::campoObrigatorio($dados, 'local_destino', 150, $erros);
 
         $itens = $dados['itens'] ?? null;
 
@@ -89,12 +73,5 @@ final class Saida
         }
 
         return $erros;
-    }
-
-    private static function dataValida(string $data): bool
-    {
-        $convertida = \DateTimeImmutable::createFromFormat('Y-m-d', $data);
-
-        return $convertida !== false && $convertida->format('Y-m-d') === $data;
     }
 }
