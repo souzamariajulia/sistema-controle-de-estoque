@@ -4,60 +4,23 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Saídas de Estoque</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <header>
-      <nav>
-        <a href="itens.html">Itens</a>
-        <a href="entradas.html">Entradas</a>
-        <a href="saidas.html">Saídas</a>
-        <a href="relatorio.html">Relatório</a>
-      </nav>
-    </header>
+    <header></header>
 
     <main>
       <section>
-        <h2>Registrar saída</h2>
-
-        <div id="mensagem" class="mensagem" hidden></div>
-
-        <form id="form-movimentacao">
-          <label>
-            Data
-            <input type="date" name="data" required />
-          </label>
-          <label>
-            Número de controle
-            <input type="text" name="numero_controle" maxlength="50" required />
-          </label>
-          <label>
-            Local/destino
-            <input type="text" name="local_destino" maxlength="150" required />
-          </label>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Quantidade</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="linhas-itens"></tbody>
-          </table>
-
-          <div class="acoes-form">
-            <button type="button" id="btn-add-linha" class="secundario">
-              + Adicionar item
-            </button>
-            <button type="submit">Registrar saída</button>
-          </div>
-        </form>
-      </section>
-
-      <section>
-        <h2>Consultar saídas por item</h2>
+        <div class="cabecalho-secao">
+          <h2>Saídas</h2>
+          <a class="botao" href="saida-nova.html">+ Registrar saída</a>
+        </div>
 
         <div class="linha-consulta">
           <div>
@@ -83,8 +46,10 @@
       </section>
     </main>
 
+    <script src="js/layout.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/movimentacao.js"></script>
+    <script src="js/movimentacao-listagem.js"></script>
     <script src="js/saidas.js"></script>
   </body>
 </html>
