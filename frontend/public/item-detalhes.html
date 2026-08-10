@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Detalhes do Item</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="itens.html">Itens</a>
+        <a href="entradas.html">Entradas</a>
+        <a href="saidas.html">Saídas</a>
+      </nav>
+    </header>
+
+    <main>
+      <section>
+        <p><a href="itens.html">&larr; Voltar para itens</a></p>
+
+        <div id="mensagem" class="mensagem" hidden></div>
+
+        <div id="detalhes-item" hidden>
+          <h2 id="titulo-item"></h2>
+
+          <div class="info-item">
+            <div>
+              <strong>Categoria</strong><span id="info-categoria"></span>
+            </div>
+            <div>
+              <strong>Subcategoria</strong><span id="info-subcategoria"></span>
+            </div>
+            <div>
+              <strong>Cadastrado por</strong
+              ><span id="info-cadastrado-por"></span>
+            </div>
+            <div>
+              <strong>Estoque atual</strong><span id="info-estoque"></span>
+            </div>
+          </div>
+
+          <div class="abas">
+            <button type="button" class="aba-botao ativa" data-aba="entradas">
+              Entradas
+            </button>
+            <button type="button" class="aba-botao" data-aba="saidas">
+              Saídas
+            </button>
+          </div>
+
+          <div id="painel-entradas" class="aba-painel">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Nota</th>
+                  <th>Fornecedor</th>
+                  <th>Quantidade</th>
+                </tr>
+              </thead>
+              <tbody id="linhas-entradas"></tbody>
+            </table>
+          </div>
+
+          <div id="painel-saidas" class="aba-painel" hidden>
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Nº controle</th>
+                  <th>Local/destino</th>
+                  <th>Quantidade</th>
+                </tr>
+              </thead>
+              <tbody id="linhas-saidas"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/item-detalhes.js"></script>
+  </body>
+</html>

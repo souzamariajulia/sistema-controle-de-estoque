@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Itens</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="itens.html">Itens</a>
+        <a href="entradas.html">Entradas</a>
+        <a href="saidas.html">Saídas</a>
+      </nav>
+    </header>
+
+    <main>
+      <section>
+        <h2>Cadastrar item</h2>
+
+        <div id="mensagem-cadastro" class="mensagem" hidden></div>
+
+        <form id="form-cadastro-item">
+          <label>
+            Descrição
+            <input type="text" name="descricao" maxlength="255" required />
+          </label>
+          <label>
+            Subcategoria
+            <select
+              name="subcategoria_id"
+              id="select-subcategoria"
+              required
+            ></select>
+          </label>
+          <label>
+            Cadastrado por
+            <input type="text" name="cadastrado_por" maxlength="150" required />
+          </label>
+          <label>
+            Estoque inicial
+            <input type="number" name="estoque" min="0" step="1" value="0" />
+          </label>
+
+          <div class="acoes-form">
+            <button type="submit">Cadastrar item</button>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h2>Itens cadastrados</h2>
+
+        <div class="linha-consulta">
+          <div>
+            <label>
+              Buscar por descrição
+              <input type="search" id="input-busca" placeholder="ex: caneta" />
+            </label>
+          </div>
+          <button type="button" id="btn-buscar">Buscar</button>
+          <button type="button" id="btn-limpar-busca" class="secundario">
+            Limpar
+          </button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Categoria</th>
+              <th>Subcategoria</th>
+              <th>Estoque</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="linhas-itens"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/itens.js"></script>
+  </body>
+</html>
