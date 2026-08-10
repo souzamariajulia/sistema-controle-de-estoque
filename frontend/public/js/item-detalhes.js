@@ -10,7 +10,7 @@ function mostrarErro(mensagemTexto) {
 function renderizarLinhasMovimento(corpo, movimentos) {
   corpo.innerHTML =
     movimentos.length === 0
-      ? '<tr><td colspan="4">Nenhum movimento encontrado.</td></tr>'
+      ? '<tr><td colspan="4" class="estado-vazio">Nenhum movimento encontrado.</td></tr>'
       : movimentos
           .map(
             (mov) => `
@@ -70,10 +70,8 @@ async function iniciar() {
 
   iniciarAbas();
 
-  const [entradas, saidas] = await Promise.all([
-    apiFetch(`/itens/${itemId}/entradas`),
-    apiFetch(`/itens/${itemId}/saidas`),
-  ]);
+  const entradas = await apiFetch(`/itens/${itemId}/entradas`);
+  const saidas = await apiFetch(`/itens/${itemId}/saidas`);
 
   renderizarLinhasMovimento(
     document.getElementById("linhas-entradas"),
