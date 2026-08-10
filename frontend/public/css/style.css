@@ -170,9 +170,11 @@ select:focus {
 
 table {
   width: 100%;
-  border-collapse: collapse;
-  border-left: 1px solid var(--cor-borda);
-  border-right: 1px solid var(--cor-borda);
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  overflow: hidden;
   margin-bottom: 1rem;
 }
 
